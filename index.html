@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tetris — Phaser Edition</title>
+    <meta name="description" content="Tetris clásico con Phaser 3 — selecciona el fluido para cambiar la física de caída." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&display=swap" rel="stylesheet" />
+    <link href="tetris.css" rel="stylesheet" />
+  </head>
+  <body>
+
+    <main id="app-shell">
+      <header id="topbar">
+        <div>
+          <p class="eyebrow">Tetris de materiales</p>
+          <h1 id="world-title">Mundo de Agua</h1>
+        </div>
+      </header>
+
+      <section id="play-layout" aria-label="Juego con mundos y materiales">
+        <div id="worlds-section" aria-label="Mundos">
+          <button class="world-card" type="button" data-world="oil">
+            <span class="world-icon">🛢️</span>
+            <span class="world-name">Mundo de Aceite</span>
+            <span class="world-desc">Viscoso · Las piezas caen lento</span>
+          </button>
+
+          <button class="world-card" type="button" data-world="honey">
+            <span class="world-icon">🍯</span>
+            <span class="world-name">Mundo de Miel</span>
+            <span class="world-desc">Muy espeso · Caída lentísima</span>
+          </button>
+
+          <button class="world-card active" type="button" data-world="water">
+            <span class="world-icon">💧</span>
+            <span class="world-name">Mundo de Agua</span>
+            <span class="world-desc">Normal · Velocidad estándar</span>
+          </button>
+
+          <button class="world-card" type="button" data-world="gasoline">
+            <span class="world-icon">⛽</span>
+            <span class="world-name">Mundo de Gasolina</span>
+            <span class="world-desc">Liviana · Caída rápida</span>
+          </button>
+
+          <button class="world-card" type="button" data-world="alcohol">
+            <span class="world-icon">🥃</span>
+            <span class="world-name">Mundo de Alcohol</span>
+            <span class="world-desc">Muy liviano · Caída veloz</span>
+          </button>
+
+          <button class="world-card" type="button" data-world="mercury">
+            <span class="world-icon">🪨</span>
+            <span class="world-name">Mundo de Mercurio</span>
+            <span class="world-desc">Metal líquido · Caída brutal</span>
+          </button>
+
+          <!-- Indicador de mundo activo -->
+          <div id="world-active-display">
+            <span id="world-active-icon">💧</span>
+            <div id="world-active-info">
+              <span id="world-active-name">Agua</span>
+              <span id="world-active-speed">×1.0 velocidad</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Wrapper del canvas -->
+        <div id="game-wrapper">
+
+      <!-- Canvas de Phaser -->
+      <div id="game-container"></div>
+
+      <!-- ── Panel de selección de fluido ── -->
+      <div id="fluid-panel" hidden>
+        <div id="fluid-panel-title">
+          <span class="drop-icon">💧</span>
+          <span>Selecciona el fluido</span>
+        </div>
+
+        <div id="fluid-buttons">
+
+          <button class="fluid-btn" data-fluid="honey" id="btn-honey">
+            <div class="fluid-icon">🍯</div>
+            <div class="fluid-info">
+              <span class="fluid-name">Miel</span>
+              <span class="fluid-desc">Muy viscosa · Caída lentísima</span>
+            </div>
+            <div class="fluid-bar-wrap">
+              <div class="fluid-bar" style="width:12%"></div>
+            </div>
+          </button>
+
+          <button class="fluid-btn" data-fluid="oil" id="btn-oil">
+            <div class="fluid-icon">🛢️</div>
+            <div class="fluid-info">
+              <span class="fluid-name">Aceite</span>
+              <span class="fluid-desc">Viscoso · Caída lenta</span>
+            </div>
+            <div class="fluid-bar-wrap">
+              <div class="fluid-bar" style="width:30%"></div>
+            </div>
+          </button>
+
+          <button class="fluid-btn active" data-fluid="water" id="btn-water">
+            <div class="fluid-icon">💧</div>
+            <div class="fluid-info">
+              <span class="fluid-name">Agua</span>
+              <span class="fluid-desc">Normal · Velocidad estándar</span>
+            </div>
+            <div class="fluid-bar-wrap">
+              <div class="fluid-bar" style="width:50%"></div>
+            </div>
+          </button>
+
+          <button class="fluid-btn" data-fluid="gasoline" id="btn-gasoline">
+            <div class="fluid-icon">⛽</div>
+            <div class="fluid-info">
+              <span class="fluid-name">Gasolina</span>
+              <span class="fluid-desc">Liviana · Caída rápida</span>
+            </div>
+            <div class="fluid-bar-wrap">
+              <div class="fluid-bar" style="width:68%"></div>
+            </div>
+          </button>
+
+          <button class="fluid-btn" data-fluid="alcohol" id="btn-alcohol">
+            <div class="fluid-icon">🥃</div>
+            <div class="fluid-info">
+              <span class="fluid-name">Alcohol</span>
+              <span class="fluid-desc">Muy liviano · Caída veloz</span>
+            </div>
+            <div class="fluid-bar-wrap">
+              <div class="fluid-bar" style="width:82%"></div>
+            </div>
+          </button>
+
+          <button class="fluid-btn" data-fluid="mercury" id="btn-mercury">
+            <div class="fluid-icon">🪨</div>
+            <div class="fluid-info">
+              <span class="fluid-name">Mercurio</span>
+              <span class="fluid-desc">Metal líquido · Caída brutal</span>
+            </div>
+            <div class="fluid-bar-wrap">
+              <div class="fluid-bar" style="width:100%"></div>
+            </div>
+          </button>
+
+        </div>
+
+        <!-- Indicador activo -->
+        <div id="fluid-active-display">
+          <span id="fluid-active-icon">💧</span>
+          <div id="fluid-active-info">
+            <span id="fluid-active-name">Agua</span>
+            <span id="fluid-active-speed">×1.0 velocidad</span>
+          </div>
+          <div id="fluid-viscosity-meter">
+            <div id="fluid-viscosity-fill"></div>
+          </div>
+        </div>
+      </div>
+
+        </div><!-- /game-wrapper -->
+
+        <!-- ── Panel de materiales ── -->
+        <div id="mat-panel">
+        <div id="mat-panel-title">
+          <span class="mat-drop-icon">⚗️</span>
+          <span>Material de las piezas</span>
+        </div>
+
+      <div id="mat-buttons">
+
+        <button class="mat-btn" data-mat="cork" id="mat-cork">
+          <div class="mat-icon-wrap">
+            <div class="mat-icon">🍾</div>
+            <div class="mat-select-ring"></div>
+          </div>
+          <div class="mat-info">
+            <span class="mat-name">Corcho</span>
+            <span class="mat-desc">Densidad ×0.35 · Flota casi siempre</span>
+          </div>
+          <div class="mat-bar-wrap"><div class="mat-bar" style="width:9%"></div></div>
+        </button>
+
+        <button class="mat-btn" data-mat="wood" id="mat-wood">
+          <div class="mat-icon-wrap">
+            <div class="mat-icon">🪵</div>
+            <div class="mat-select-ring"></div>
+          </div>
+          <div class="mat-info">
+            <span class="mat-name">Madera</span>
+            <span class="mat-desc">Densidad ×0.60 · Ligero</span>
+          </div>
+          <div class="mat-bar-wrap"><div class="mat-bar" style="width:15%"></div></div>
+        </button>
+
+        <button class="mat-btn active" data-mat="plastic" id="mat-plastic">
+          <div class="mat-icon-wrap">
+            <div class="mat-icon">🧴</div>
+            <div class="mat-select-ring"></div>
+          </div>
+          <div class="mat-info">
+            <span class="mat-name">Plástico</span>
+            <span class="mat-desc">Densidad ×0.90 · Casi neutro</span>
+          </div>
+          <div class="mat-bar-wrap"><div class="mat-bar" style="width:23%"></div></div>
+        </button>
+
+        <button class="mat-btn" data-mat="stone" id="mat-stone">
+          <div class="mat-icon-wrap">
+            <div class="mat-icon">🪨</div>
+            <div class="mat-select-ring"></div>
+          </div>
+          <div class="mat-info">
+            <span class="mat-name">Piedra</span>
+            <span class="mat-desc">Densidad ×1.50 · Cae rápido</span>
+          </div>
+          <div class="mat-bar-wrap"><div class="mat-bar" style="width:38%"></div></div>
+        </button>
+
+        <button class="mat-btn" data-mat="iron" id="mat-iron">
+          <div class="mat-icon-wrap">
+            <div class="mat-icon">⚙️</div>
+            <div class="mat-select-ring"></div>
+          </div>
+          <div class="mat-info">
+            <span class="mat-name">Hierro</span>
+            <span class="mat-desc">Densidad ×2.50 · Cae fuerte</span>
+          </div>
+          <div class="mat-bar-wrap"><div class="mat-bar" style="width:63%"></div></div>
+        </button>
+
+        <button class="mat-btn" data-mat="lead" id="mat-lead">
+          <div class="mat-icon-wrap">
+            <div class="mat-icon">🔩</div>
+            <div class="mat-select-ring"></div>
+          </div>
+          <div class="mat-info">
+            <span class="mat-name">Plomo</span>
+            <span class="mat-desc">Densidad ×4.00 · Hundimiento brutal</span>
+          </div>
+          <div class="mat-bar-wrap"><div class="mat-bar" style="width:100%"></div></div>
+        </button>
+
+      </div>
+
+      <!-- Indicador activo -->
+      <div id="mat-active-display">
+        <span id="mat-active-icon">🧴</span>
+        <div id="mat-active-info">
+          <span id="mat-active-name">Plástico</span>
+          <span id="mat-active-label">Casi neutro</span>
+        </div>
+        <div id="mat-speed-wrap">
+          <span id="mat-combined-speed">×0.90 vel. combinada</span>
+          <div id="mat-density-meter">
+            <div id="mat-density-fill"></div>
+          </div>
+        </div>
+      </div>
+        </div><!-- /mat-panel -->
+      </section>
+    </main>
+
+
+
+    <!-- ── Tooltip educativo de material ── -->
+    <div id="density-tooltip" role="tooltip" aria-live="polite">
+      <div id="density-tooltip-header">
+        <span id="dt-icon"></span>
+        <div id="dt-header-text">
+          <span id="dt-name"></span>
+          <span id="dt-density-badge"></span>
+        </div>
+      </div>
+      <div id="density-tooltip-body">
+        <div class="dt-row">
+          <span class="dt-label">🔬 Densidad real</span>
+          <span id="dt-density" class="dt-value"></span>
+        </div>
+        <div class="dt-row">
+          <span class="dt-label">⚖️ vs Agua</span>
+          <span id="dt-compare" class="dt-value"></span>
+        </div>
+        <div id="dt-density-bar-wrap">
+          <div id="dt-density-bar"></div>
+          <div id="dt-density-bar-labels">
+            <span>Ligero</span><span>Denso</span>
+          </div>
+        </div>
+        <!-- Carrusel de datos curiosos -->
+        <div id="dt-facts-carousel">
+          <div id="dt-fact" class="dt-fact"></div>
+          <div id="dt-fact-nav">
+            <button id="dt-prev" aria-label="Dato anterior">‹</button>
+            <span id="dt-fact-counter"></span>
+            <button id="dt-next" aria-label="Siguiente dato">›</button>
+          </div>
+        </div>
+        <!-- Tabla de interacción con líquidos -->
+        <div id="dt-interactions">
+          <div class="dt-section-label">💧 En cada líquido</div>
+          <div id="dt-interaction-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Tooltip educativo de mundo ── -->
+    <div id="world-tooltip" role="tooltip" aria-live="polite">
+      <div id="wt-header">
+        <span id="wt-icon"></span>
+        <div id="wt-header-text">
+          <span id="wt-name"></span>
+          <span id="wt-speed-badge"></span>
+        </div>
+      </div>
+      <div id="wt-body">
+        <div class="dt-row">
+          <span class="dt-label">🌊 Viscosidad</span>
+          <span id="wt-viscosity" class="dt-value"></span>
+        </div>
+        <div class="dt-row">
+          <span class="dt-label">⚡ Velocidad</span>
+          <span id="wt-speed" class="dt-value"></span>
+        </div>
+        <div id="wt-fact" class="dt-fact"></div>
+        <div id="wt-mat-effects">
+          <div class="dt-section-label">🧱 Efecto sobre materiales</div>
+          <div id="wt-mat-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.87.0/dist/phaser.min.js"></script>
+    <script src="tetris.js"></script>
+  </body>
+</html>
